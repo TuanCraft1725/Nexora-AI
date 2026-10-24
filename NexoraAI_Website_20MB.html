@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<title>Nexora AI — Your thinking space</title>
+<style>
+:root{
+  --bg:#090d18; --panel:#101728; --panel2:#151e32; --line:rgba(180,198,235,.13);
+  --text:#f2f5ff; --muted:#9aa8c3; --accent:#8b9cff; --accent2:#72e2d1;
+  --bubble:#172238; --shadow:0 24px 80px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,textarea{-webkit-tap-highlight-color:transparent}
+button{touch-action:manipulation}
+:focus-visible{outline:2px solid #91a2ff;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+body{min-height:100dvh;background:radial-gradient(ellipse at 85% 0%,rgba(79,101,201,.18),transparent 34%),radial-gradient(ellipse at 0% 85%,rgba(32,151,148,.09),transparent 32%),var(--bg)}
+button,textarea{font:inherit}
+button{cursor:pointer}
+.app{display:grid;grid-template-columns:258px minmax(0,1fr);min-height:100dvh;max-width:1600px;margin:auto}
+.sidebar{border-right:1px solid var(--line);padding:22px 15px;display:flex;flex-direction:column;gap:24px;background:rgba(9,13,24,.62);backdrop-filter:blur(20px)}
+.brand{display:flex;align-items:center;gap:11px;padding:0 8px}
+.logo{width:39px;height:39px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#a6b3ff,#7184e9 55%,#64d9cf);box-shadow:0 8px 24px #7487ef35;color:#0a1020}
+.brand-name{font-weight:750;letter-spacing:.2px;font-size:17px}.brand-sub{font-size:10px;letter-spacing:2px;color:var(--muted);margin-top:2px}
+.new-chat{width:100%;border:1px solid #899bff52;background:linear-gradient(110deg,#8c9cff20,#6ee3d012);color:var(--text);border-radius:14px;padding:12px 13px;display:flex;align-items:center;gap:10px;font-weight:650;text-align:left}
+.new-chat:hover,.suggestion:hover{border-color:#93a4ff9c;background-color:#1b2740}
+.side-label{color:#74839f;text-transform:uppercase;letter-spacing:1.5px;font-size:10px;font-weight:750;padding:0 10px}
+.side-link{display:flex;gap:11px;align-items:center;padding:10px;border-radius:11px;color:#bdc8de;font-size:13px}
+.side-link.active{background:#a1b0ff14;color:#eef1ff}
+.side-link svg{opacity:.8}
+.side-bottom{margin-top:auto;display:grid;gap:10px}
+.plan-card{border:1px solid var(--line);border-radius:15px;padding:13px;background:linear-gradient(145deg,#141e34,#0d1424)}
+.plan-top{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700}.plan-dot{width:7px;height:7px;border-radius:50%;background:#72e2d1;box-shadow:0 0 10px #72e2d1}
+.plan-card p{font-size:11px;line-height:1.6;color:var(--muted);margin:9px 0 0}
+.profile{display:flex;align-items:center;gap:10px;padding:6px 7px}
+.avatar{width:33px;height:33px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#263859,#50649a);font-size:12px;font-weight:800}
+.profile strong{font-size:12px;display:block}.profile small{color:var(--muted);font-size:10px}
+.main{display:flex;flex-direction:column;min-width:0;min-height:100dvh;min-height:100svh}
+.topbar{height:76px;flex:0 0 76px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#090d1866;backdrop-filter:blur(16px);position:sticky;top:0;z-index:5}
+.top-left{display:flex;align-items:center;gap:12px}.mobile-brand{display:none}
+.mode{font-size:13px;color:#dce4fa;font-weight:650}.mode-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.top-actions{display:flex;align-items:center;gap:9px}
+.icon-btn{width:37px;height:37px;display:grid;place-items:center;border-radius:12px;border:1px solid var(--line);background:#11192a;color:#c7d2e8}
+.icon-btn:hover{background:#1b2740}
+.status{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:#b9c6de;font-size:11px}
+.status span{width:6px;height:6px;border-radius:50%;background:#68dbc0}
+.content{width:min(900px,100%);margin:0 auto;padding:clamp(22px,4vh,44px) clamp(16px,3vw,30px) 20px;display:flex;flex-direction:column;flex:1;min-height:0}
+.chat-log{overscroll-behavior:contain;scroll-margin-top:80px}
+.composer-wrap{z-index:4}
+.welcome{text-align:center;margin:auto auto 24px;padding:12px 0 18px;width:100%}
+.orb-wrap{width:86px;height:86px;margin:0 auto 24px;position:relative;display:grid;place-items:center}
+.orb{width:67px;height:67px;border-radius:24px;display:grid;place-items:center;background:linear-gradient(145deg,#b3bdff 0%,#7c8df3 48%,#63ddcf 100%);color:#11172a;box-shadow:0 0 0 10px #8e9dff0b,0 14px 48px #7388f344;transform:rotate(-7deg)}
+.orb svg{transform:rotate(7deg)}
+.orbit{position:absolute;inset:0;border:1px solid #94a4ff36;border-radius:50%;animation:spin 16s linear infinite}
+.orbit:after{content:"";position:absolute;width:7px;height:7px;top:8px;left:12px;border-radius:50%;background:#72e2d1;box-shadow:0 0 15px #72e2d1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:2.4px;color:#94a6ff;font-weight:800;margin-bottom:12px}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.12;letter-spacing:-1.8px;margin:0;font-weight:760}
+h1 .gradient{background:linear-gradient(100deg,#eef1ff 10%,#a7b4ff 54%,#77e4d2 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.subtitle{max-width:490px;margin:15px auto 0;font-size:14px;line-height:1.8;color:var(--muted)}
+.suggestions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:26px auto 0;max-width:650px}
+.suggestion{padding:15px 15px;text-align:left;min-height:88px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#131d30c9,#0f1626c9);color:var(--text);transition:.18s}
+.sug-icon{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#a1b0ff15;color:#aebaff;margin-bottom:10px}
+.suggestion strong{font-size:12px;display:block;margin-bottom:5px}.suggestion small{font-size:11px;line-height:1.5;color:var(--muted);display:block}
+.chat-log{display:none;flex-direction:column;gap:21px;padding:8px 0 25px}
+.message{scroll-margin-bottom:150px}
+.message.assistant .msg-text{white-space:normal}
+.message.assistant .msg-text p{margin:0 0 12px}
+.message.assistant .msg-text p:last-child{margin-bottom:0}
+.message.assistant .msg-text h1,.message.assistant .msg-text h2,.message.assistant .msg-text h3{font-size:1.12em;line-height:1.45;margin:15px 0 8px;color:#f2f5ff}
+.message.assistant .msg-text ul,.message.assistant .msg-text ol{padding-left:24px;margin:7px 0 13px}
+.message.assistant .msg-text li{margin:4px 0}
+.message.assistant .msg-text blockquote{border-left:3px solid #899bff;padding:3px 0 3px 12px;margin:10px 0;color:#b7c4df}
+.message.assistant .msg-text hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+.message.assistant .msg-text code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#202b42;border:1px solid #9eafff20;border-radius:5px;padding:1px 5px;font-size:.92em}
+.message.assistant .msg-text pre{overflow-x:auto;white-space:pre;margin:9px 0 13px;padding:12px;border:1px solid var(--line);border-radius:11px;background:#080d18}
+.message.assistant .msg-text pre code{padding:0;border:0;background:transparent;font-size:12px;line-height:1.65}
+.message.assistant .msg-text a{color:#9eafff;text-decoration:underline}
+.message.assistant .msg-body{flex:1}
+.message.assistant .msg-text .cursor{display:inline-block;width:7px;height:1em;background:#a8b5ff;vertical-align:-2px;margin-left:2px;border-radius:2px;animation:cursorBlink .8s steps(2,start) infinite}
+@keyframes cursorBlink{to{visibility:hidden}}
+.reply-actions{display:flex;gap:7px;margin-top:10px;opacity:.72}
+.reply-action{display:grid;place-items:center;width:30px;height:30px;border:1px solid var(--line);border-radius:9px;background:transparent;color:#9eacc5}
+.reply-action:hover{background:#18243a;color:#e8edff}
+.typing-label{font-size:11px;color:#8d9bb7;margin:0 0 3px}
+.message{display:flex;gap:10px;align-items:flex-start;animation:appear .25s ease}
+@keyframes appear{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg-avatar{flex:0 0 31px;height:31px;border-radius:11px;display:grid;place-items:center;background:#8e9fff1b;color:#b7c2ff;border:1px solid #a7b3ff25}
+.message.user{flex-direction:row-reverse}
+.message.user .msg-avatar{background:#21344a;color:#8fe5d6;border-color:#70e1d222}
+.msg-body{max-width:calc(100% - 42px);min-width:0}
+.msg-name{font-size:11px;color:#8f9eb9;margin:1px 0 7px}
+.message.user .msg-name{text-align:right}
+.msg-text{font-size:14px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
+.message.user .msg-text{background:#19253a;border:1px solid #a1b0ff17;border-radius:16px 5px 16px 16px;padding:11px 14px}
+.message.assistant .msg-text{padding:0 2px;color:#e2e8f7}
+.typing{display:flex;gap:4px;padding:10px 0}.typing i{width:5px;height:5px;border-radius:50%;background:#9eafff;animation:bounce .8s infinite alternate}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bounce{to{opacity:.3;transform:translateY(-4px)}}
+.composer-wrap{position:sticky;bottom:0;padding:10px 0 max(12px,env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,#090d18 18%);margin-top:auto}
+.composer{border:1px solid #9baaff30;border-radius:21px;background:linear-gradient(145deg,#141d30f5,#101728f5);box-shadow:var(--shadow);padding:12px 12px 10px;transition:border .2s}
+.composer:focus-within{border-color:#92a3ff8a}
+textarea{width:100%;resize:none;max-height:160px;min-height:48px;background:transparent;border:0;outline:0;color:var(--text);font-size:14px;line-height:1.6;padding:6px 5px}
+textarea::placeholder{color:#7787a5}
+.composer-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 2px 0}
+.attachments-panel{display:none;gap:8px;flex-wrap:wrap;padding:7px 2px 9px;border-bottom:1px solid var(--line);margin-bottom:6px}.attachments-panel.show{display:flex}.attachment-chip{display:flex;align-items:center;gap:8px;max-width:100%;padding:6px 8px;background:#1a2740;border:1px solid #9baaff25;border-radius:11px;color:#dce5fa;font-size:11px}.attachment-chip img{width:34px;height:34px;object-fit:cover;border-radius:7px}.attachment-meta{min-width:0;display:flex;flex-direction:column;gap:2px}.attachment-name{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.attachment-size{font-size:9px;color:#8998b5}.attachment-remove{border:0;background:transparent;color:#b7c4df;font-size:18px;padding:0 2px;line-height:1}.tool{cursor:pointer}.tool:active{transform:scale(.97)}.attach-input{display:none}.user-attachments{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.user-attachments img{width:88px;height:88px;object-fit:cover;border-radius:10px;border:1px solid #a1b0ff35}.user-file{display:inline-flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid #a1b0ff25;border-radius:9px;background:#101b2e;color:#d9e3f8;font-size:11px;max-width:210px;overflow-wrap:anywhere}
+.composer-tools{display:flex;gap:7px;align-items:center}.tool{display:flex;gap:6px;align-items:center;border:1px solid var(--line);background:#111a2b;color:#9eacc5;border-radius:10px;padding:7px 9px;font-size:10px}
+.send{width:37px;height:37px;border:0;border-radius:12px;background:linear-gradient(135deg,#aab5ff,#77dfd2);color:#0b1423;display:grid;place-items:center;box-shadow:0 6px 18px #8d9eff28}
+.send:disabled{opacity:.4;cursor:not-allowed}
+.disclaimer{text-align:center;color:#65738d;font-size:10px;line-height:1.6;margin-top:12px}
+.toast{position:fixed;left:50%;bottom:25px;transform:translate(-50%,15px);background:#1c2940;border:1px solid var(--line);color:#eaf0ff;border-radius:12px;padding:10px 14px;font-size:12px;opacity:0;pointer-events:none;transition:.2s;z-index:10;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.mobile-menu{display:none}
+@media(min-width:1200px){.sidebar{padding:26px 18px}.content{padding-top:clamp(34px,6vh,64px)}.chat-log{gap:24px}}
+@media(max-width:760px){
+ .app{display:block}.sidebar{position:fixed;z-index:20;inset:0 auto 0 0;width:min(280px,86vw);transform:translateX(-105%);transition:transform .25s;box-shadow:var(--shadow);background:#0b1120}
+ .sidebar.open{transform:translateX(0)}.mobile-menu{display:grid}
+ .topbar{height:65px;padding:0 15px}.top-actions .status{display:none}.mobile-brand{display:flex;align-items:center;gap:8px;font-weight:750;font-size:14px}.mobile-brand .mini-logo{width:29px;height:29px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(145deg,#a6b3ff,#64d9cf);color:#0b1120}
+ .desktop-mode{display:none}.content{padding:26px 15px 12px;min-height:calc(100dvh - 65px)}
+ .welcome{margin:auto auto 18px;padding:14px 0}.orb-wrap{width:72px;height:72px;margin-bottom:21px}.orb{width:57px;height:57px;border-radius:20px}
+ h1{letter-spacing:-1.2px}.subtitle{font-size:13px;margin-top:12px;max-width:340px}
+ .suggestions{gap:8px;margin-top:22px}.suggestion{padding:12px;min-height:94px;border-radius:14px}.sug-icon{width:25px;height:25px;margin-bottom:8px}.suggestion strong{font-size:11px}.suggestion small{font-size:10px}
+ .composer{border-radius:18px;padding:9px 9px 8px}textarea{font-size:14px;min-height:44px}.tool{padding:7px 8px}
+ .chat-log{padding-top:6px;gap:18px}.msg-text{font-size:13px}.composer-wrap{padding-bottom:max(12px,env(safe-area-inset-bottom))}
+}
+@media(max-width:370px){.suggestions{grid-template-columns:1fr}.suggestion{min-height:0}.suggestion small{font-size:11px}.content{padding-inline:12px}.composer-tools span{display:none}}
+@media(hover:none){.suggestion:hover,.icon-btn:hover,.reply-action:hover{background-color:initial}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 18V6l14 12V6M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><div class="brand-name">Nexora AI</div><div class="brand-sub">INTELLIGENCE, REIMAGINED</div></div>
+    </div>
+    <button class="new-chat" id="newChat"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Cuộc trò chuyện mới</button>
+    <div>
+      <div class="side-label">Không gian</div>
+      <div class="side-link active"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 3V5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg> Trò chuyện</div>
+      <div class="side-link" id="memoryLink"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 0 0-3 11.2V17h6v-2.8A6 6 0 0 0 12 3ZM9 20h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> Bộ nhớ AI <span style="margin-left:auto;font-size:10px;color:#7584a1">Sắp có</span></div>
+      <div class="side-link" id="historyLink"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 1 0 3-6.7L3 8m0-5v5h5M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Lịch sử</div>
+    </div>
+    <div>
+      <div class="side-label">Khám phá</div>
+      <div class="side-link" data-prompt="Giải thích một khái niệm khó theo cách dễ hiểu, có ví dụ."><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3 14.7 9.3 21 12l-6.3 2.7L12 21l-2.7-6.3L3 12l6.3-2.7L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> Học tập thông minh</div>
+      <div class="side-link" data-prompt="Hãy giúp tôi phân tích một vấn đề theo từng bước logic."><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M8 4H4v4m0-4 5 5m7-5h4v4m0-4-5 5M4 16v4h4m-4 0 5-5m7 5h4v-4m0 4-5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Tư duy logic</div>
+    </div>
+    <div class="side-bottom">
+      <div class="plan-card"><div class="plan-top"><span class="plan-dot"></span> Nexora AI <span style="margin-left:auto;color:#92a3ff">v0.1</span></div><p>Trợ lý AI trực tuyến. Bộ não AI chưa được kết nối; câu trả lời hiện tại chỉ là minh họa.</p></div>
+      <div class="profile"><div class="avatar">N</div><div><strong>Người khám phá</strong><small>Không gian cá nhân</small></div><button class="icon-btn" id="settings" style="margin-left:auto;width:32px;height:32px" aria-label="Cài đặt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7ZM19 13.5l2-1.5-2-1.5-.7-2.1.6-2.4-2.5-.5-1.5-1.7L12 5l-2.9-1.2L7.6 5.5l-2.5.5.6 2.4L5 10.5 3 12l2 1.5.7 2.1-.6 2.4 2.5.5 1.5 1.7L12 19l2.9 1.2 1.5-1.7 2.5-.5-.6-2.4.7-2.1Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button></div>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="top-left">
+        <button class="icon-btn mobile-menu" id="menuBtn" aria-label="Mở menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+        <div class="mobile-brand"><span class="mini-logo">N</span>Nexora AI</div>
+        <div class="desktop-mode"><div class="mode">Không gian trí tuệ <span style="color:#8d9eff">✦</span></div><div class="mode-sub">Một nơi để hỏi, khám phá và tạo ra điều mới.</div></div>
+      </div>
+      <div class="top-actions">
+        <div class="status"><span></span> Bản xem trước</div>
+        <button class="icon-btn" id="themeBtn" aria-label="Đổi giao diện" title="Đổi giao diện"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5 8.5 8.5 0 1 0 20.5 15.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+      </div>
+    </header>
+    <section class="content">
+      <div class="welcome" id="welcome">
+        <div class="orb-wrap"><div class="orbit"></div><div class="orb"><svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M5 18V6l14 12V6M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+        <div class="eyebrow">YOUR INTELLIGENCE SPACE</div>
+        <h1>Xin chào, nhà <span class="gradient">khám phá.</span></h1>
+        <p class="subtitle">Ý tưởng lớn thường bắt đầu từ một câu hỏi nhỏ. Hôm nay, bạn muốn cùng Nexora khám phá điều gì?</p>
+        <div class="suggestions">
+          <button class="suggestion" data-prompt="Giải thích trí tuệ nhân tạo bằng ngôn ngữ đơn giản, kèm ví dụ thực tế."><span class="sug-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 14.7 9.3 21 12l-6.3 2.7L12 21l-2.7-6.3L3 12l6.3-2.7L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><strong>Khám phá ý tưởng</strong><small>Biến điều phức tạp thành dễ hiểu</small></button>
+          <button class="suggestion" data-prompt="Hãy hướng dẫn tôi viết chương trình Python đầu tiên từng bước, dành cho người mới bắt đầu."><span class="sug-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><strong>Lập trình thông minh</strong><small>Học code, tìm lỗi, xây dự án</small></button>
+          <button class="suggestion" data-prompt="Giúp tôi lập kế hoạch học tập 7 ngày, thực tế, dễ theo dõi và có mục tiêu mỗi ngày."><span class="sug-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M8 3v3m8-3v3M4 9h16M6 5h12a2 2 0 0 1 2 2v12H4V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><strong>Lên kế hoạch</strong><small>Sắp xếp mục tiêu rõ ràng hơn</small></button>
+          <button class="suggestion" data-prompt="Tôi có một ý tưởng nhưng chưa biết bắt đầu. Hãy hỏi tôi 3 câu ngắn để giúp biến nó thành kế hoạch."><span class="sug-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 13v.01M9.4 9a2.7 2.7 0 1 1 4.5 2c-1.1.7-1.9 1.1-1.9 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><strong>Phát triển ý tưởng</strong><small>Bắt đầu từ điều bạn đang nghĩ</small></button>
+        </div>
+      </div>
+      <div class="chat-log" id="chatLog" aria-live="polite"></div>
+      <div class="composer-wrap">
+        <div class="composer">
+          <div id="attachmentsPanel" class="attachments-panel" aria-label="Tệp đính kèm"></div>
+          <textarea id="prompt" rows="1" placeholder="Hỏi Nexora bất cứ điều gì..." aria-label="Nhập câu hỏi"></textarea>
+          <input class="attach-input" id="fileInput" type="file" multiple accept=".txt,.md,.markdown,.json,.json5,.csv,.html,.htm,.css,.js,.mjs,.ts,.py,.java,.kt,.c,.cpp,.h,.hpp,.xml,.log,.yaml,.yml,.sql,.sh,.bat,.ini,.toml,.properties,.gradle,.php,.rb,.go,.rs,.swift,.dart,.vue,.svelte,.jsx,.tsx,.env,.conf,.cfg,.mcmeta,.lang,.ipynb,.patch,.diff">
+          <input class="attach-input" id="imageInput" type="file" accept="image/*" multiple>
+          <input class="attach-input" id="cameraInput" type="file" accept="image/*" capture="environment">
+          <div class="composer-bottom">
+            <div class="composer-tools">
+              <button class="tool" id="fileBtn" type="button" title="Tải tệp lên"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 16V4m-5 5 5-5 5 5M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Tệp</span></button>
+              <button class="tool" id="imageBtn" type="button" title="Chọn ảnh từ điện thoại"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="9" r="1.5" stroke="currentColor" stroke-width="1.4"/><path d="m4 17 5-5 4 4 3-3 4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Ảnh</span></button>
+              <button class="tool" id="cameraBtn" type="button" title="Chụp ảnh bằng camera"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11H3V8a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" stroke="currentColor" stroke-width="1.6"/></svg><span>Chụp ảnh</span></button>
+              <button class="tool" id="clearBtn" title="Xóa nội dung đang nhập"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Thêm câu hỏi</span></button>
+            </div>
+            <button class="send" id="sendBtn" aria-label="Gửi câu hỏi" disabled><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 19V5m-6 6 6-6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <div class="disclaimer">Tệp văn bản/code và ảnh: tối đa 20 MB mỗi tệp. AI có thể chỉ xử lý một phần tệp quá dài do giới hạn ngữ cảnh.<br>Luôn kiểm tra lại thông tin quan trọng.</div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $ = id => document.getElementById(id);
+const promptBox = $('prompt'), sendBtn = $('sendBtn'), chatLog = $('chatLog'), welcome = $('welcome');
+const attachmentsPanel = $('attachmentsPanel');
+let selectedAttachments = [], toastTimer, isSending = false, turnId = 0, lastQuestion = '';
+function toast(msg){
+ const t=$('toast');t.textContent=msg;t.classList.add('show');
+ clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+function resize(){
+ promptBox.style.height='auto';
+ promptBox.style.height=Math.min(promptBox.scrollHeight,160)+'px';
+ sendBtn.disabled=(!promptBox.value.trim()&&!selectedAttachments.length)||isSending;
+}
+function scrollToLatest(smooth=true){
+ const last=chatLog.lastElementChild;
+ if(last) last.scrollIntoView({behavior:smooth?'smooth':'auto',block:'end'});
+}
+promptBox.addEventListener('input',resize);
+promptBox.addEventListener('keydown',e=>{
+ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}
+});
+const TEXT_EXTENSIONS = new Set(['txt','md','markdown','json','json5','csv','html','htm','css','js','mjs','ts','py','java','kt','c','cpp','h','hpp','xml','log','yaml','yml','sql','sh','bat','ini','toml','properties','gradle','php','rb','go','rs','swift','dart','vue','svelte','jsx','tsx','env','conf','cfg','mcmeta','lang','patch','diff','ipynb']);
+const MAX_FILE_BYTES = 20 * 1024 * 1024, MAX_IMAGE_BYTES = 20 * 1024 * 1024, MAX_ATTACHMENTS = 5;
+function prettySize(n){return n<1024?`${n} B`:n<1024*1024?`${(n/1024).toFixed(1)} KB`:`${(n/1024/1024).toFixed(1)} MB`;}
+function dataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result));r.onerror=()=>reject(new Error('Không đọc được tệp'));r.readAsDataURL(file);});}
+function renderAttachments(){
+ attachmentsPanel.innerHTML='';
+ selectedAttachments.forEach((a,index)=>{
+  const chip=document.createElement('div');chip.className='attachment-chip';
+  if(a.kind==='image'){const img=document.createElement('img');img.src=a.data;img.alt=a.name;chip.append(img);}
+  else {const ico=document.createElement('span');ico.textContent=a.kind==='text'?'📄':'📎';ico.style.fontSize='20px';chip.append(ico);}
+  const meta=document.createElement('div');meta.className='attachment-meta';
+  const name=document.createElement('span');name.className='attachment-name';name.textContent=a.name;
+  const size=document.createElement('span');size.className='attachment-size';size.textContent=`${a.kind==='image'?'Ảnh':a.kind==='text'?'Nội dung sẽ được đọc':'Tệp đính kèm'} · ${prettySize(a.size)}`;
+  meta.append(name,size);chip.append(meta);
+  const remove=document.createElement('button');remove.className='attachment-remove';remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','Bỏ '+a.name);remove.addEventListener('click',()=>{selectedAttachments.splice(index,1);renderAttachments();resize();});chip.append(remove);attachmentsPanel.append(chip);
+ });
+ attachmentsPanel.classList.toggle('show',selectedAttachments.length>0);resize();
+}
+async function handleFiles(fileList,source='file'){
+ const files=Array.from(fileList||[]);if(!files.length)return;
+ for(const file of files){
+  if(selectedAttachments.length>=MAX_ATTACHMENTS){toast(`Chỉ có thể đính kèm tối đa ${MAX_ATTACHMENTS} tệp cùng lúc.`);break;}
+  const ext=(file.name.split('.').pop()||'').toLowerCase();
+  const isImage=file.type.startsWith('image/')||source==='image'||source==='camera';
+  if(isImage){
+   if(!file.type.startsWith('image/')){toast('Tệp này không phải ảnh.');continue;}
+   if(file.size>MAX_IMAGE_BYTES){toast(`Ảnh ${file.name} vượt quá giới hạn 20 MB.`);continue;}
+   try{const data=await dataUrl(file);selectedAttachments.push({name:file.name||'anh-chup.jpg',type:file.type||'image/jpeg',size:file.size,kind:'image',data});}catch{toast('Không thể đọc ảnh này.');}
+  }else if(TEXT_EXTENSIONS.has(ext)){
+   if(file.size>MAX_FILE_BYTES){toast(`Tệp ${file.name} vượt quá giới hạn 20 MB.`);continue;}
+   try{const content=await file.text();selectedAttachments.push({name:file.name,type:file.type||'text/plain',size:file.size,kind:'text',content});}catch{toast(`Không đọc được tệp ${file.name}.`);}
+  }else{
+   toast(`Chưa hỗ trợ đọc trực tiếp .${ext||'tệp này'}. Hãy gửi TXT/MD/JSON/code hoặc chuyển tài liệu sang văn bản.`);
+  }
+ }
+ renderAttachments();
+}
+$('fileBtn').addEventListener('click',()=>$('fileInput').click());
+$('imageBtn').addEventListener('click',()=>$('imageInput').click());
+$('cameraBtn').addEventListener('click',()=>$('cameraInput').click());
+$('fileInput').addEventListener('change',e=>{handleFiles(e.target.files,'file');e.target.value='';});
+$('imageInput').addEventListener('change',e=>{handleFiles(e.target.files,'image');e.target.value='';});
+$('cameraInput').addEventListener('change',e=>{handleFiles(e.target.files,'camera');e.target.value='';});
+function makeIconButton(label,path,callback){
+ const b=document.createElement('button');b.className='reply-action';b.type='button';b.setAttribute('aria-label',label);b.title=label;
+ b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">'+path+'</svg>';
+ b.addEventListener('click',callback);return b;
+}
+function addMessage(role,text){
+ const wrap=document.createElement('div');wrap.className='message '+role;
+ const av=document.createElement('div');av.className='msg-avatar';av.textContent=role==='user'?'B':'N';
+ const body=document.createElement('div');body.className='msg-body';
+ const name=document.createElement('div');name.className='msg-name';name.textContent=role==='user'?'Bạn':'Nexora AI';
+ const content=document.createElement('div');content.className='msg-text';content.textContent=text;
+ body.append(name,content);wrap.append(av,body);chatLog.append(wrap);
+ return {wrap,content,body};
+}
+function showUserAttachments(container,attachments){
+ if(!attachments.length)return;
+ const row=document.createElement('div');row.className='user-attachments';
+ attachments.forEach(a=>{
+  if(a.kind==='image'){const img=document.createElement('img');img.src=a.data;img.alt=a.name;row.append(img);}
+  else{const file=document.createElement('div');file.className='user-file';file.textContent='📄 '+a.name;row.append(file);}
+ });container.append(row);
+}
+function showTyping(){
+ const wrap=document.createElement('div');wrap.className='message assistant';wrap.id='typingMessage';
+ const av=document.createElement('div');av.className='msg-avatar';av.textContent='N';
+ const body=document.createElement('div');body.className='msg-body';
+ const name=document.createElement('div');name.className='msg-name';name.textContent='Nexora AI';
+ const label=document.createElement('div');label.className='typing-label';label.textContent='Đang suy nghĩ';
+ const dots=document.createElement('div');dots.className='typing';dots.innerHTML='<i></i><i></i><i></i>';
+ body.append(name,label,dots);wrap.append(av,body);chatLog.append(wrap);scrollToLatest();return wrap;
+}
+function escapeHTML(value){
+ return value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function inlineMarkdown(value){
+ let out=escapeHTML(value);
+ out=out.replace(/`([^`]+)`/g,'<code>$1</code>');
+ out=out.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+ out=out.replace(/__(.+?)__/g,'<strong>$1</strong>');
+ out=out.replace(/~~(.+?)~~/g,'<del>$1</del>');
+ out=out.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g,'$1<em>$2</em>');
+ out=out.replace(/(^|[^_])_([^_\n]+)_(?!_)/g,'$1<em>$2</em>');
+ out=out.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+ return out;
+}
+function renderMarkdown(target, markdown){
+ const lines=markdown.replace(/\r\n?/g,'\n').split('\n');
+ let html='', paragraph=[], listType=null, inCode=false, codeLines=[];
+ const flushParagraph=()=>{if(paragraph.length){html+='<p>'+paragraph.map(inlineMarkdown).join('<br>')+'</p>';paragraph=[];}};
+ const flushList=()=>{if(listType){html+='</'+listType+'>';listType=null;}};
+ for(const line of lines){
+  if(/^\s*```/.test(line)){
+   flushParagraph();flushList();
+   if(!inCode){inCode=true;codeLines=[];}else{html+='<pre><code>'+escapeHTML(codeLines.join('\n'))+'</code></pre>';inCode=false;}
+   continue;
+  }
+  if(inCode){codeLines.push(line);continue;}
+  if(!line.trim()){flushParagraph();flushList();continue;}
+  const heading=line.match(/^\s{0,3}(#{1,3})\s+(.+)$/);
+  if(heading){flushParagraph();flushList();const level=heading[1].length;html+='<h'+level+'>'+inlineMarkdown(heading[2])+'</h'+level+'>';continue;}
+  if(/^\s*(---+|\*\*\*+|___+)\s*$/.test(line)){flushParagraph();flushList();html+='<hr>';continue;}
+  const quote=line.match(/^\s*&gt;\s?(.*)$/) || line.match(/^\s*>\s?(.*)$/);
+  if(quote){flushParagraph();flushList();html+='<blockquote>'+inlineMarkdown(quote[1])+'</blockquote>';continue;}
+  const ul=line.match(/^\s*[-*+]\s+(.+)$/), ol=line.match(/^\s*\d+[.)]\s+(.+)$/);
+  if(ul||ol){flushParagraph();const nextType=ul?'ul':'ol';if(listType!==nextType){flushList();listType=nextType;html+='<'+listType+'>';}html+='<li>'+inlineMarkdown((ul||ol)[1])+'</li>';continue;}
+  flushList();paragraph.push(line);
+ }
+ if(inCode)html+='<pre><code>'+escapeHTML(codeLines.join('\n'))+'</code></pre>';
+ flushParagraph();flushList();
+ target.innerHTML=html||escapeHTML(markdown);
+}
+function typeText(target,text,token){
+ target.textContent='';
+ const cursor=document.createElement('span');cursor.className='cursor';cursor.setAttribute('aria-hidden','true');target.append(cursor);
+ let i=0;
+ // Streaming-style animation for preview. Real model output will replace this later.
+ const step=()=>{
+  if(token!==turnId||!target.isConnected)return;
+  const chunk=text.slice(i,i+Math.max(2,Math.min(5,Math.ceil((text.length-i)/90))));
+  i+=chunk.length;cursor.before(document.createTextNode(chunk));scrollToLatest(false);
+  if(i<text.length){setTimeout(step,16);}
+  else{
+   cursor.remove();
+   const plainText=target.textContent;
+   renderMarkdown(target,plainText);
+   const actions=document.createElement('div');actions.className='reply-actions';
+   const copy=makeIconButton('Sao chép câu trả lời','<path d="M8 8V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-3M5 8h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',async()=>{
+    try{await navigator.clipboard.writeText(plainText);toast('Đã sao chép câu trả lời');}
+    catch{toast('Trình duyệt chưa cho phép sao chép');}
+   });
+   const again=makeIconButton('Gửi lại câu hỏi gần nhất','<path d="M20 7v5h-5M4 17v-5h5M5.6 9A7 7 0 0 1 17 6.5L20 12M4 12l3 5.5A7 7 0 0 0 18.4 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',()=>send(lastQuestion));
+   actions.append(copy,again);target.parentElement.append(actions);
+   isSending=false;resize();
+  }
+ };
+ step();
+}
+const API_URL='https://nexora-ai-api.tuandzs1tg2.workers.dev/';
+async function send(custom){
+ if(isSending)return;
+ const text=(custom||promptBox.value).trim();if(!text&&!selectedAttachments.length)return;
+ const attachments=selectedAttachments.slice();
+ const shownText=text||'Hãy xem và phân tích tệp đính kèm của tôi.';
+ lastQuestion=shownText;isSending=true;turnId++;const thisTurn=turnId;
+ welcome.style.display='none';chatLog.style.display='flex';
+ const userMsg=addMessage('user',shownText);showUserAttachments(userMsg.body,attachments);promptBox.value='';selectedAttachments=[];renderAttachments();resize();
+ const loading=showTyping();
+ try{
+  const response=await fetch(API_URL,{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({message:shownText,attachments:attachments.map(a=>a.kind==='image'?{name:a.name,type:a.type,kind:a.kind,data:a.data}:{name:a.name,type:a.type,kind:a.kind,content:a.content})})
+  });
+  const data=await response.json();
+  if(thisTurn!==turnId)return;
+  loading.remove();
+  if(!response.ok||data.error){
+   const detail=data.error||'Không thể kết nối Nexora AI.';
+   const msg=addMessage('assistant','');
+   typeText(msg.content,'Xin lỗi, Nexora AI gặp lỗi: '+detail+'\n\nHãy thử gửi lại sau nhé.',thisTurn);
+  }else{
+   let answer=typeof data.reply==='string'&&data.reply.trim()?data.reply.trim():'AI chưa trả về nội dung. Hãy thử lại nhé.';
+   if(Array.isArray(data.warnings)&&data.warnings.length) answer+='\n\n⚠️ Lưu ý về tệp:\n'+data.warnings.map(w=>' - '+w).join('\n');
+   const msg=addMessage('assistant','');typeText(msg.content,answer,thisTurn);
+  }
+  scrollToLatest();
+ }catch(error){
+  if(thisTurn!==turnId)return;
+  loading.remove();
+  const msg=addMessage('assistant','');
+  typeText(msg.content,'Không kết nối được máy chủ Nexora AI. Hãy kiểm tra mạng và thử lại. Chi tiết: '+(error?.message||'Lỗi kết nối'),thisTurn);
+  scrollToLatest();
+ }finally{
+  if(thisTurn===turnId){isSending=false;resize();}
+ }
+}
+sendBtn.addEventListener('click',()=>send());
+document.querySelectorAll('[data-prompt]').forEach(el=>el.addEventListener('click',()=>{
+ promptBox.value=el.dataset.prompt;resize();
+ if(el.classList.contains('suggestion'))send();
+ else{promptBox.focus();if(window.innerWidth<=760)$('sidebar').classList.remove('open');}
+}));
+$('newChat').addEventListener('click',()=>{
+ turnId++;isSending=false;chatLog.innerHTML='';chatLog.style.display='none';welcome.style.display='block';promptBox.value='';selectedAttachments=[];renderAttachments();resize();$('sidebar').classList.remove('open');toast('Đã tạo cuộc trò chuyện mới');
+});
+$('clearBtn').addEventListener('click',()=>{promptBox.value='';resize();promptBox.focus()});
+$('menuBtn').addEventListener('click',()=>$('sidebar').classList.toggle('open'));
+$('memoryLink').addEventListener('click',()=>toast('Bộ nhớ AI sẽ được thêm ở phiên bản sau'));
+$('historyLink').addEventListener('click',()=>toast('Lịch sử hội thoại sẽ được bổ sung sau'));
+$('settings').addEventListener('click',()=>toast('Cài đặt sẽ được bổ sung sau'));
+$('themeBtn').addEventListener('click',()=>toast('Tùy chỉnh giao diện sẽ được thêm ở phiên bản sau'));
+document.addEventListener('click',e=>{
+ if(window.innerWidth<=760&&!$('sidebar').contains(e.target)&&!$('menuBtn').contains(e.target))$('sidebar').classList.remove('open');
+});
+resize();
+</script>
+</body>
+</html>
